@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { Link } from '@inertiajs/react';
 import Layout from '../Components/Layout';
 
-export default function Home() {
+export default function Home({ competitions }) {
     return (
         <Layout>
 
@@ -27,14 +27,14 @@ export default function Home() {
 
                 {/* Circuit lines decorative */}
                 <svg className="absolute top-0 left-0 w-full h-full z-0 opacity-[0.04]" xmlns="http://www.w3.org/2000/svg">
-                    <line x1="0" y1="30%" x2="100%" y2="30%" stroke="#111827" strokeWidth="1"/>
-                    <line x1="0" y1="70%" x2="100%" y2="70%" stroke="#111827" strokeWidth="1"/>
-                    <line x1="20%" y1="0" x2="20%" y2="100%" stroke="#111827" strokeWidth="1"/>
-                    <line x1="80%" y1="0" x2="80%" y2="100%" stroke="#111827" strokeWidth="1"/>
-                    <circle cx="20%" cy="30%" r="4" fill="#FACC15"/>
-                    <circle cx="80%" cy="30%" r="4" fill="#FACC15"/>
-                    <circle cx="20%" cy="70%" r="4" fill="#FACC15"/>
-                    <circle cx="80%" cy="70%" r="4" fill="#FACC15"/>
+                    <line x1="0" y1="30%" x2="100%" y2="30%" stroke="#111827" strokeWidth="1" />
+                    <line x1="0" y1="70%" x2="100%" y2="70%" stroke="#111827" strokeWidth="1" />
+                    <line x1="20%" y1="0" x2="20%" y2="100%" stroke="#111827" strokeWidth="1" />
+                    <line x1="80%" y1="0" x2="80%" y2="100%" stroke="#111827" strokeWidth="1" />
+                    <circle cx="20%" cy="30%" r="4" fill="#FACC15" />
+                    <circle cx="80%" cy="30%" r="4" fill="#FACC15" />
+                    <circle cx="20%" cy="70%" r="4" fill="#FACC15" />
+                    <circle cx="80%" cy="70%" r="4" fill="#FACC15" />
                 </svg>
 
                 <div className="relative z-10 flex flex-col items-center">
@@ -115,7 +115,7 @@ export default function Home() {
                     {/* Stats row */}
                     <div className="mt-12 grid grid-cols-3 gap-6 max-w-2xl mx-auto">
                         {[
-                            { num: '4', label: 'Kompetisi' },
+                            { num: competitions.length, label: 'Kompetisi' },
                             { num: '1', label: 'Seminar Nasional' },
                             { num: '∞', label: 'Kesempatan' },
                         ].map((s, i) => (
@@ -130,35 +130,81 @@ export default function Home() {
                 </div>
             </section>
 
+            {/* Timeline Section */}
+            <section className="py-24 px-6 bg-white relative overflow-hidden">
+                <div className="absolute left-1/2 top-0 h-full w-[520px] -translate-x-1/2 rounded-full bg-yellow-100 opacity-30" />
+                <div className="relative max-w-6xl mx-auto">
+                    <div className="text-center mb-14">
+                        <span className="text-yellow-500 font-semibold text-xs uppercase tracking-widest">
+                            Timeline
+                        </span>
+                        <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mt-3 tracking-tight">
+                            Agenda Penting EEA 2026
+                        </h2>
+                        <p className="mt-4 text-gray-500 max-w-2xl mx-auto">
+                            Ikuti rangkaian acara penting dari pendaftaran hingga pengumuman pemenang.
+                        </p>
+                    </div>
+
+                    <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+                        {[
+                            {
+                                title: 'Pendaftaran Dibuka',
+                                date: '10 Mei 2026',
+                                desc: 'Buka pendaftaran seminar dan semua lomba untuk seluruh mahasiswa.',
+                            },
+                            {
+                                title: 'Pembayaran & Verifikasi',
+                                date: '15-20 Mei 2026',
+                                desc: 'Lunasi biaya seminar dan konfirmasi data peserta oleh panitia.',
+                            },
+                            {
+                                title: 'Hari Seminar',
+                                date: '25 Mei 2026',
+                                desc: 'Seminar nasional berlangsung dengan pembicara ahli dan sesi networking.',
+                            },
+                            {
+                                title: 'Pengumuman Pemenang',
+                                date: '30 Mei 2026',
+                                desc: 'Hasil lomba diumumkan dan pemenang menerima hadiah serta sertifikat.',
+                            },
+                        ].map((item, index) => (
+                            <div key={index} className="rounded-[2rem] border border-gray-100 bg-gray-50 p-8 shadow-sm transition hover:-translate-y-1 hover:shadow-md">
+                                <div className="mb-4 inline-flex rounded-full bg-yellow-50 px-4 py-2 text-sm font-semibold text-yellow-600">
+                                    {item.date}
+                                </div>
+                                <h3 className="text-xl font-semibold text-gray-900 mb-3">{item.title}</h3>
+                                <p className="text-gray-500 leading-relaxed">{item.desc}</p>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
             {/* Competition Section */}
             <section className="py-24 px-6 bg-white">
                 <div className="max-w-6xl mx-auto">
                     <div className="text-center mb-14">
                         <span className="text-yellow-500 font-semibold text-xs uppercase tracking-widest">Kompetisi</span>
                         <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mt-3 tracking-tight">
-                            4 Lomba yang Bisa Kamu Ikuti
+                            {competitions.length} Lomba yang Bisa Kamu Ikuti
                         </h2>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                        {[
-                            { icon: '🚀', title: 'Roket Air', desc: 'Rancang dan luncurkan roket air terbaik kamu', type: 'roket_air' },
-                            { icon: '💡', title: 'IoT', desc: 'Inovasi teknologi berbasis Internet of Things', type: 'iot' },
-                            { icon: '🎨', title: 'UI/UX', desc: 'Desain antarmuka yang intuitif dan menarik', type: 'uiux' },
-                            { icon: '🖼️', title: 'Desain Poster', desc: 'Ekspresikan kreativitasmu lewat desain poster', type: 'desain_poster' },
-                        ].map((item, i) => (
+                        {competitions.map((item, i) => (
                             <div key={i}
                                 className="group bg-white border border-gray-100 rounded-2xl p-6 shadow-sm
-                                           hover:shadow-lg hover:border-yellow-200 hover:-translate-y-2
-                                           transition-all duration-300 text-center cursor-pointer">
-                                <div className="text-4xl mb-4 group-hover:scale-110 transition-transform duration-300">
+                                  hover:shadow-lg hover:border-yellow-200 hover:-translate-y-2
+                                     transition-all duration-300 text-center cursor-pointer">
+                                  <div className="text-4xl mb-4 group-hover:scale-110 transition-transform duration-300">
                                     {item.icon}
                                 </div>
-                                <h3 className="text-base font-bold text-gray-900 mb-2">{item.title}</h3>
-                                <p className="text-gray-400 text-sm leading-relaxed mb-4">{item.desc}</p>
-                                <Link href={`/competition?type=${item.type}`}
+                                <h3 className="text-base font-bold text-gray-900 mb-2">{item.name}</h3>
+                                <p className="text-gray-400 text-sm leading-relaxed mb-4">{item.description}</p>
+                                <Link href={`/competition?type=${item.slug}`}
                                     className="text-yellow-500 text-sm font-semibold hover:text-yellow-600
-                                               transition-colors duration-200">
+                           transition-colors duration-200">
                                     Lihat detail →
                                 </Link>
                             </div>
@@ -198,7 +244,7 @@ export default function Home() {
                         <div className="flex-shrink-0 bg-gray-50 rounded-2xl p-10 border border-gray-100 text-center min-w-[200px]">
                             <p className="text-gray-400 text-xs uppercase tracking-widest mb-3">Harga Tiket</p>
                             <p className="text-5xl font-bold text-yellow-400 mb-1"
-                               style={{ textShadow: '0 0 30px rgba(250,204,21,0.3)' }}>
+                                style={{ textShadow: '0 0 30px rgba(250,204,21,0.3)' }}>
                                 Rp ???
                             </p>
                             <p className="text-gray-400 text-xs">per orang</p>

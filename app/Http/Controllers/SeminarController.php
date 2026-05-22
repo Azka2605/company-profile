@@ -69,9 +69,12 @@ class SeminarController extends Controller
             ],
         ];
 
-        $snapToken = \Midtrans\Snap::getSnapToken($params);
-
-        $registration->update(['midtrans_token' => $snapToken]);
+       try {
+    $snapToken = \Midtrans\Snap::getSnapToken($params);
+    $registration->update(['midtrans_token' => $snapToken]);
+} catch (\Exception $e) {
+    dd($e->getMessage());
+}
 
         return Inertia::render('SeminarRegister', [
             'snap_token'   => $snapToken,

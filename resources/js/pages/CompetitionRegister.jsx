@@ -2,18 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { Head, useForm, usePage } from '@inertiajs/react';
 import Layout from '../Components/Layout';
 
-const competitionLabels = {
-    roket_air:     '🚀 Roket Air',
-    iot:           '💡 IoT',
-    uiux:          '🎨 UI/UX',
-    desain_poster: '🖼️ Desain Poster',
-};
 
-export default function CompetitionRegister({ existing, user, type, snap_token, client_key, snap_url }) {
-    const [registrationType, setRegistrationType] = useState('individu');
+
+export default function CompetitionRegister({ existing, user, competition, snap_token, client_key, snap_url }) {
+const [registrationType, setRegistrationType] = useState('individu');
 
     const { data, setData, post, processing, errors } = useForm({
-        competition_type:  type,
+        competition_type:  competition.slug,
         registration_type: 'individu',
         name:              user?.name || '',
         email:             user?.email || '',
@@ -67,9 +62,9 @@ export default function CompetitionRegister({ existing, user, type, snap_token, 
     };
 
     const submit = (e) => {
-        e.preventDefault();
-        post(route('competition.store'));
-    };
+    e.preventDefault();
+    post(route('competition.store', competition.slug));
+};
 
     if (existing) {
         return (
@@ -92,11 +87,11 @@ export default function CompetitionRegister({ existing, user, type, snap_token, 
 
     return (
         <Layout>
-            <Head title={`Daftar ${competitionLabels[type]} — EEA 2026`} />
+            <Head title={`Daftar ${competition.name} — EEA 2026`} />
             <section className="py-20 px-6 bg-white min-h-screen">
                 <div className="max-w-lg mx-auto">
                     <span className="text-yellow-500 font-semibold text-sm uppercase tracking-widest">Kompetisi</span>
-                    <h1 className="text-3xl font-bold text-gray-900 mt-2 mb-2">{competitionLabels[type]}</h1>
+                    <h1 className="text-3xl font-bold text-gray-900 mt-2 mb-2">{competition.name}</h1>
                     <p className="text-gray-500 mb-8">Isi formulir pendaftaran di bawah ini.</p>
 
                     <form onSubmit={submit} className="space-y-5">

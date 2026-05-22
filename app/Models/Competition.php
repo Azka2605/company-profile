@@ -17,6 +17,7 @@ class Competition extends Model
         'max_participants',
         'is_active',
         'registration_type',
+        'price',
     ];
 
     protected $casts = [
