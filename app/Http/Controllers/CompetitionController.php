@@ -2,69 +2,100 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Competition;
 use App\Models\CompetitionRegistration;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class CompetitionController extends Controller
 {
-    public function create($type)
+    public function register($slug)  // ← rename dari create(), pakai $slug
     {
-        $validTypes = ['roket_air', 'iot', 'uiux', 'desain_poster'];
-
-        if (!in_array($type, $validTypes)) {
-            abort(404);
-        }
+        // Ambil dari DB, bukan hard-coded
+        $competition = Competition::where('slug', $slug)
+            ->where('is_active', true)
+            ->firstOrFail();  // otomatis 404 kalau tidak ada
 
         $user = auth()->user();
 
         $existing = CompetitionRegistration::where('user_id', $user->id)
-            ->where('competition_type', $type)
+            ->where('competition_type', $slug)
             ->first();
 
         return Inertia::render('CompetitionRegister', [
-            'type'     => $type,
-            'existing' => $existing,
-            'user'     => $user,
+            'competition' => $competition,  // ← kirim object lengkap
+            'existing'    => $existing,
+            'user'        => $user,
         ]);
     }
 
     public function store(Request $request)
-    {
-        $request->validate([
-            'competition_type'  => 'required|in:roket_air,iot,uiux,desain_poster',
-            'registration_type' => 'required|in:individu,tim',
-            'name'              => 'required|string|max:255',
-            'email'             => 'required|email',
-            'phone'             => 'required|string|max:20',
-            'institution'       => 'required|string|max:255',
-            'team_name'         => 'nullable|string|max:255',
-            'members'           => 'nullable|array',
-        ]);
+{
+    $request->validate([
+        'competition_type'  => 'required|exists:competitions,slug',
+        'registration_type' => 'required|in:individu,tim',
+        'name'              => 'required|string|max:255',
+        'email'             => 'required|email',
+        'phone'             => 'required|string|max:20',
+        'institution'       => 'required|string|max:255',
+        'team_name'         => 'nullable|string|max:255',
+        'members'           => 'nullable|array',
+    ]);
 
-        $user = auth()->user();
+    $user = auth()->user();
 
-        $existing = CompetitionRegistration::where('user_id', $user->id)
-            ->where('competition_type', $request->competition_type)
-            ->first();
+    // ← tambah ini: ambil data competition dari DB
+    $competition = Competition::where('slug', $request->competition_type)->firstOrFail();
 
-        if ($existing) {
-            return back()->withErrors(['message' => 'Kamu sudah mendaftar lomba ini.']);
-        }
+    $existing = CompetitionRegistration::where('user_id', $user->id)
+        ->where('competition_type', $request->competition_type)
+        ->first();
 
-        CompetitionRegistration::create([
-            'user_id'           => $user->id,
-            'competition_type'  => $request->competition_type,
-            'registration_type' => $request->registration_type,
-            'name'              => $request->name,
-            'email'             => $request->email,
-            'phone'             => $request->phone,
-            'institution'       => $request->institution,
-            'team_name'         => $request->team_name,
-            'members'           => $request->members,
-            'status'            => 'pending',
-        ]);
-
-        return redirect()->route('dashboard')->with('success', 'Pendaftaran lomba berhasil! Panitia akan menghubungi kamu segera.');
+    if ($existing) {
+        return back()->withErrors(['message' => 'Kamu sudah mendaftar lomba ini.']);
     }
+
+    $orderId = 'COMPETITION-' . $user->id . '-' . time();
+
+    $registration = CompetitionRegistration::create([
+        'user_id'           => $user->id,
+        'competition_type'  => $request->competition_type,
+        'registration_type' => $request->registration_type,
+        'name'              => $request->name,
+        'email'             => $request->email,
+        'phone'             => $request->phone,
+        'institution'       => $request->institution,
+        'team_name'         => $request->team_name,
+        'members'           => $request->members,
+        'status'            => 'pending',
+        'midtrans_order_id' => $orderId,
+    ]);
+
+    \Midtrans\Config::$serverKey = config('services.midtrans.server_key');
+    \Midtrans\Config::$isProduction = config('services.midtrans.is_production');
+    \Midtrans\Config::$isSanitized = true;
+    \Midtrans\Config::$is3ds = true;
+
+    $params = [
+        'transaction_details' => [
+            'order_id'     => $orderId,
+            'gross_amount' => $competition->price, // ← ganti dari 50000
+        ],
+        'customer_details' => [
+            'first_name' => $request->name,
+            'email'      => $request->email,
+            'phone'      => $request->phone,
+        ],
+    ];
+
+    try {
+        $snapToken = \Midtrans\Snap::getSnapToken($params);
+        $registration->update(['midtrans_token' => $snapToken]);
+    } catch (\Exception $e) {
+        dd($e->getMessage());
+    }
+
+    return redirect()->route('dashboard')
+        ->with('success', 'Pendaftaran berhasil! Selesaikan pembayaran di dashboard.');
+}
 }

@@ -97,18 +97,32 @@ export default function Dashboard({ seminar, competitions, client_key, snap_url 
                         {competitions && competitions.length > 0 ? (
                             <div className="space-y-4">
                                 {competitions.map((c, i) => (
-                                    <div key={i} className="bg-white border border-gray-100 rounded-2xl p-6 shadow-sm">
-                                        <div className="flex items-center justify-between flex-wrap gap-3">
-                                            <div>
-                                                <p className="font-semibold text-gray-900">{c.competition_type.replace('_', ' ').toUpperCase()}</p>
-                                                <p className="text-sm text-gray-500">{c.registration_type === 'tim' ? `Tim: ${c.team_name}` : 'Individu'}</p>
-                                            </div>
-                                            <span className={`text-sm font-bold px-4 py-1.5 rounded-full border ${statusColor[c.status]}`}>
-                                                {statusLabel[c.status]}
-                                            </span>
-                                        </div>
-                                    </div>
-                                ))}
+    <div key={i} className="bg-white border border-gray-100 rounded-2xl p-6 shadow-sm">
+        <div className="flex items-center justify-between flex-wrap gap-3">
+            <div>
+                <p className="font-semibold text-gray-900">
+                    {c.competition_type.replace(/_/g, ' ').toUpperCase()}
+                </p>
+                <p className="text-sm text-gray-500">
+                    {c.registration_type === 'tim' ? `Tim: ${c.team_name}` : 'Individu'}
+                </p>
+            </div>
+            {/* ← fix: pakai payment_status bukan status */}
+            <span className={`text-sm font-bold px-4 py-1.5 rounded-full border ${statusColor[c.payment_status ?? c.status]}`}>
+                {statusLabel[c.payment_status ?? c.status]}
+            </span>
+        </div>
+
+        {/* ← tambah tombol bayar */}
+        {(c.payment_status === 'pending' || c.status === 'pending') && c.midtrans_token && (
+            <button
+                onClick={() => bayarSekarang(c.midtrans_token)}
+                className="mt-4 bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-bold px-6 py-2.5 rounded-full text-sm transition">
+                Bayar Sekarang
+            </button>
+        )}
+    </div>
+))}
                             </div>
                         ) : (
                             <div className="bg-gray-50 border border-gray-100 rounded-2xl p-6 text-center">

@@ -9,17 +9,22 @@ use App\Http\Controllers\MidtransController;
 use App\Http\Controllers\Auth\GoogleController;
 
 // ─── Public Routes ───────────────────────────────────────
-Route::get('/', fn() => Inertia::render('Home'))->name('home');
+Route::get('/', function () {
+    $competitions = App\Models\Competition::where('is_active', true)->get();
+    return Inertia::render('Home', [
+        'competitions' => $competitions,
+    ]);
+})->name('home');
 Route::get('/about', fn() => Inertia::render('About'))->name('about');
 Route::get('/seminar', fn() => Inertia::render('Seminar'))->name('seminar');
-Route::get('/competition', fn() => Inertia::render('Competition'))->name('competition');
+Route::get('/competition', function () {
+    $competitions = App\Models\Competition::where('is_active', true)->get();
+    return Inertia::render('Competition', [
+        'competitions' => $competitions,
+    ]);
+})->name('competition');
 Route::get('/contact', fn() => Inertia::render('Contact'))->name('contact');
 
-// ─── Competition Detail Pages ─────────────────────────────
-Route::get('/competition/roket-air', fn() => Inertia::render('Competitions/RoketAir'))->name('competition.roket-air');
-Route::get('/competition/iot', fn() => Inertia::render('Competitions/IoT'))->name('competition.iot');
-Route::get('/competition/uiux', fn() => Inertia::render('Competitions/UIUX'))->name('competition.uiux');
-Route::get('/competition/desain-poster', fn() => Inertia::render('Competitions/DesainPoster'))->name('competition.desain-poster');
 
 // ─── Auth Required ───────────────────────────────────────
 Route::middleware('auth')->group(function () {
@@ -44,8 +49,8 @@ Route::get('/dashboard', function () {
     Route::post('/seminar/register', [SeminarController::class, 'store'])->name('seminar.store');
 
     // Competition Registration
-    Route::get('/competition/{type}/register', [CompetitionController::class, 'create'])->name('competition.register');
-    Route::post('/competition/register', [CompetitionController::class, 'store'])->name('competition.store');
+    Route::get('/competition/{slug}/register', [CompetitionController::class, 'register'])->name('competition.register');
+    Route::post('/competition/{slug}/register', [CompetitionController::class, 'store'])->name('competition.store');
 });
 
 Route::post('/midtrans/webhook', [MidtransController::class, 'handle'])

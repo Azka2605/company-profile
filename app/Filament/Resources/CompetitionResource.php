@@ -48,6 +48,12 @@ class CompetitionResource extends Resource
                             ->label('Maks. Peserta')
                             ->numeric()
                             ->default(100),
+                        Forms\Components\TextInput::make('price')
+                            ->label('Harga (Rp)')
+                            ->numeric()
+                            ->default(50000)
+                            ->prefix('Rp')
+                            ->required(),
                         Forms\Components\Toggle::make('is_active')
                             ->label('Aktif')
                             ->default(true),
@@ -107,6 +113,10 @@ class CompetitionResource extends Resource
                 Tables\Columns\TextColumn::make('name')->searchable()->label('Nama Lomba'),
                 Tables\Columns\TextColumn::make('slug')->label('Slug'),
                 Tables\Columns\TextColumn::make('max_participants')->label('Maks. Peserta'),
+                Tables\Columns\TextColumn::make('price')
+    ->label('Harga')
+    ->money('IDR')
+    ->sortable(),
                 Tables\Columns\IconColumn::make('is_active')->boolean()->label('Aktif'),
                 Tables\Columns\TextColumn::make('registration_type')->label('Tipe'),
                 Tables\Columns\TextColumn::make('created_at')->dateTime()->sortable()->label('Dibuat'),
