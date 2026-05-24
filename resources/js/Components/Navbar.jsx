@@ -8,11 +8,11 @@ export default function Navbar() {
         <nav className="fixed top-0 w-full z-50 bg-black bg-opacity-80 backdrop-blur-sm">
             <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
                 {/* Logo */}
-                <Link
-                    href="/"
-                    className="text-yellow-400 font-bold text-2xl tracking-widest"
-                >
-                    EEA <span className="text-white">2026</span>
+                <Link href="/" className="flex items-center gap-2">
+                    <img src="/images/logo-eea.png" alt="EEA" className="w-8 h-8 object-contain" />
+                    <span className="text-yellow-400 font-bold text-2xl tracking-widest">
+                        EEA <span className="text-white">2026</span>
+                    </span>
                 </Link>
 
                 {/* Menu */}

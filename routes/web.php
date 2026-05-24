@@ -11,12 +11,24 @@ use App\Http\Controllers\Auth\GoogleController;
 // ─── Public Routes ───────────────────────────────────────
 Route::get('/', function () {
     $competitions = App\Models\Competition::where('is_active', true)->get();
+    $timelines    = App\Models\Timeline::where('is_active', true)->orderBy('order')->get();
+    $seminar      = App\Models\Seminar::where('is_active', true)->first();
     return Inertia::render('Home', [
         'competitions' => $competitions,
+        'timelines'    => $timelines,
+        'seminar'      => $seminar,
     ]);
 })->name('home');
+
+Route::get('/seminar', function () {
+    $seminar   = App\Models\Seminar::where('is_active', true)->first();
+    $timelines = App\Models\Timeline::where('is_active', true)->orderBy('order')->get();
+    return Inertia::render('Seminar', [
+        'seminar'   => $seminar,
+        'timelines' => $timelines,
+    ]);
+})->name('seminar');
 Route::get('/about', fn() => Inertia::render('About'))->name('about');
-Route::get('/seminar', fn() => Inertia::render('Seminar'))->name('seminar');
 Route::get('/competition', function () {
     $competitions = App\Models\Competition::where('is_active', true)->get();
     return Inertia::render('Competition', [

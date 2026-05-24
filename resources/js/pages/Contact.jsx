@@ -3,7 +3,7 @@ import { Head, Link } from '@inertiajs/react';
 import Layout from '../Components/Layout';
 
 const contacts = [
-    { role: 'Ketua Pelaksana', name: 'Nama Ketua', whatsapp: '6281234567890', instagram: '@nama_ketua', emoji: '👤' },
+    { role: 'Ketua Pelaksana', name: 'Hafizh Abdoel Ghofar', whatsapp: '6281234567890', instagram: '@hfizh626', emoji: '👤' },
     { role: 'Koordinator Seminar', name: 'Nama Koordinator', whatsapp: '6281234567891', instagram: '@nama_koor_seminar', emoji: '🎤' },
     { role: 'Koordinator Lomba', name: 'Nama Koordinator', whatsapp: '6281234567892', instagram: '@nama_koor_lomba', emoji: '🏆' },
 ];

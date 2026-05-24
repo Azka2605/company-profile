@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from '@inertiajs/react';
 import Layout from '../Components/Layout';
 
-export default function Seminar() {
+export default function Seminar({ seminar, timelines = [] }) {
     return (
         <Layout>
 
@@ -10,10 +10,10 @@ export default function Seminar() {
             <section className="bg-white py-20 px-6 text-center border-b border-gray-100">
                 <span className="text-yellow-500 font-semibold text-sm uppercase tracking-widest">Seminar Nasional</span>
                 <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mt-2 mb-4">
-                    Seminar Nasional <span className="text-yellow-500">EEA 2026</span>
+                    {seminar?.title ?? 'Seminar Nasional'} <span className="text-yellow-500">EEA 2026</span>
                 </h1>
                 <p className="text-gray-500 max-w-xl mx-auto text-lg">
-                    Dapatkan wawasan dari para ahli dan praktisi terkemuka di bidang teknik elektro dan teknologi.
+                    {seminar?.description ?? 'Dapatkan wawasan dari para ahli dan praktisi terkemuka.'}
                 </p>
             </section>
 
@@ -21,9 +21,9 @@ export default function Seminar() {
             <section className="py-16 px-6 bg-gray-50">
                 <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
                     {[
-                        { icon: '📅', label: 'Tanggal', value: 'TBD' },
-                        { icon: '📍', label: 'Lokasi', value: 'Universitas Lampung' },
-                        { icon: '🎟️', label: 'Harga Tiket', value: 'Rp TBD' },
+                        { icon: '📅', label: 'Tanggal', value: seminar?.date ? new Date(seminar.date).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }) : 'TBD' },
+                        { icon: '📍', label: 'Lokasi', value: seminar?.location ?? 'Universitas Lampung' },
+                        { icon: '🎟️', label: 'Harga Tiket', value: seminar ? `Rp ${seminar.price.toLocaleString('id-ID')}` : 'Rp TBD' },
                     ].map((item, i) => (
                         <div key={i} className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 text-center">
                             <div className="text-4xl mb-3">{item.icon}</div>
@@ -43,22 +43,18 @@ export default function Seminar() {
                     </div>
 
                     <div className="space-y-6">
-                        {[
-                            { label: 'Pendaftaran Dibuka', date: 'TBD', desc: 'Pembelian tiket dibuka untuk umum' },
-                            { label: 'Pendaftaran Ditutup', date: 'TBD', desc: 'Batas akhir pembelian tiket' },
-                            { label: 'Pelaksanaan Seminar', date: 'TBD', desc: 'Hari pelaksanaan seminar nasional' },
-                        ].map((t, i) => (
+                        {timelines.map((t, i) => (
                             <div key={i} className="flex gap-6 items-start">
                                 <div className="flex flex-col items-center">
                                     <div className="w-10 h-10 bg-yellow-400 rounded-full flex items-center justify-center font-bold text-gray-900">
                                         {i + 1}
                                     </div>
-                                    {i < 2 && <div className="w-0.5 h-12 bg-yellow-200 mt-1"></div>}
+                                    {i < timelines.length - 1 && <div className="w-0.5 h-12 bg-yellow-200 mt-1"></div>}
                                 </div>
                                 <div className="pb-6">
-                                    <p className="font-bold text-gray-900">{t.label}</p>
+                                    <p className="font-bold text-gray-900">{t.title}</p>
                                     <p className="text-yellow-500 text-sm font-semibold">{t.date}</p>
-                                    <p className="text-gray-400 text-sm mt-1">{t.desc}</p>
+                                    <p className="text-gray-400 text-sm mt-1">{t.description}</p>
                                 </div>
                             </div>
                         ))}

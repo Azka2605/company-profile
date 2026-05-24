@@ -32,7 +32,6 @@ export default function Layout({ children }) {
                             <li><Link href="/" className="hover:text-yellow-400 transition">Home</Link></li>
                             <li><Link href="/seminar" className="hover:text-yellow-400 transition">Seminar</Link></li>
                             <li><Link href="/competition" className="hover:text-yellow-400 transition">Competition</Link></li>
-                            <li><Link href="/about" className="hover:text-yellow-400 transition">About</Link></li>
                             <li><Link href="/contact" className="hover:text-yellow-400 transition">Contact</Link></li>
                         </ul>
                     </div>
@@ -41,9 +40,9 @@ export default function Layout({ children }) {
                     <div>
                         <h4 className="text-white font-semibold mb-4">Kontak</h4>
                         <ul className="space-y-2 text-sm">
-                            <li>📧 eea@unila.ac.id</li>
+                            <li>📧 officialeea@gmail.com</li>
                             <li>📍 Universitas Lampung</li>
-                            <li>📱 Instagram: @eea_unila</li>
+                            <li>📱 Instagram: @eea.unila</li>
                         </ul>
                     </div>
 
