@@ -22,4 +22,9 @@ class Seminar extends Model
         'date'      => 'date',
         'is_active' => 'boolean',
     ];
+
+    public function speakers()
+    {
+        return $this->hasMany(Speaker::class)->orderBy('order');
+    }
 }
