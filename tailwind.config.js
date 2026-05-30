@@ -12,8 +12,10 @@ export default {
 
     theme: {
         extend: {
+            // Di bagian theme.extend:
             fontFamily: {
-                sans: ['Figtree', ...defaultTheme.fontFamily.sans],
+                sans: ['Nunito', 'sans-serif'],
+                heading: ['Sora', 'sans-serif'],
             },
         },
     },

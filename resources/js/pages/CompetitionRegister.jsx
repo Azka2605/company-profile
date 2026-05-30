@@ -99,19 +99,24 @@ const [registrationType, setRegistrationType] = useState('individu');
                         {/* Tipe Registrasi */}
                         <div>
                             <label className="block text-sm font-semibold text-gray-700 mb-2">Tipe Pendaftaran</label>
-                            <div className="flex gap-3">
-                                {['individu', 'tim'].map(t => (
-                                    <button key={t} type="button"
-                                        onClick={() => setRegistrationType(t)}
-                                        className={`px-5 py-2 rounded-full text-sm font-bold border transition ${
-                                            registrationType === t
-                                                ? 'bg-yellow-400 border-yellow-400 text-gray-900'
-                                                : 'bg-white border-gray-200 text-gray-500'
-                                        }`}>
-                                        {t === 'individu' ? '👤 Individu' : '👥 Tim'}
-                                    </button>
-                                ))}
-                            </div>
+                          <div className="flex gap-3">
+    {(competition.registration_type === 'individu'
+    ? ['individu']
+    : competition.registration_type === 'tim'
+    ? ['tim']
+    : ['individu', 'tim']
+).map(t => (
+        <button key={t} type="button"
+            onClick={() => setRegistrationType(t)}
+            className={`px-5 py-2 rounded-full text-sm font-bold border transition ${
+                registrationType === t
+                    ? 'bg-yellow-400 border-yellow-400 text-gray-900'
+                    : 'bg-white border-gray-200 text-gray-500'
+            }`}>
+            {t === 'individu' ? '👤 Individu' : '👥 Tim'}
+        </button>
+    ))}
+</div>
                         </div>
 
                         {/* Nama */}
