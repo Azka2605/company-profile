@@ -112,9 +112,19 @@ export default function Seminar({ seminar, timelines = [] }) {
 
                             {/* Avatar */}
                             <div className="relative shrink-0">
-                                <div className="w-40 h-40 rounded-3xl bg-gradient-to-br from-yellow-400 to-orange-500 flex items-center justify-center shadow-2xl shadow-yellow-500/20 border-4 border-yellow-400/30">
-                                    <Mic className="w-16 h-16 text-slate-900" />
-                                </div>
+                                {seminar?.speaker_photo_url ? (
+                                    <div className="w-40 h-40 rounded-3xl overflow-hidden shadow-2xl shadow-yellow-500/20 border-4 border-yellow-400/30">
+                                        <img
+                                            src={seminar.speaker_photo_url}
+                                            alt={`Foto ${seminar.speaker}`}
+                                            className="w-full h-full object-cover"
+                                        />
+                                    </div>
+                                ) : (
+                                    <div className="w-40 h-40 rounded-3xl bg-gradient-to-br from-yellow-400 to-orange-500 flex items-center justify-center shadow-2xl shadow-yellow-500/20 border-4 border-yellow-400/30">
+                                        <Mic className="w-16 h-16 text-slate-900" />
+                                    </div>
+                                )}
                                 <div className="absolute -bottom-3 -right-3 w-10 h-10 bg-emerald-400 rounded-full flex items-center justify-center shadow-lg">
                                     <CheckCircle2 className="w-6 h-6 text-white" />
                                 </div>
@@ -130,6 +140,11 @@ export default function Seminar({ seminar, timelines = [] }) {
                                 </h3>
                                 {seminar.speaker_title && (
                                     <p className="text-slate-400 text-lg font-medium">{seminar.speaker_title}</p>
+                                )}
+                                {seminar.speaker_description && (
+                                    <p className="mt-4 text-slate-300 text-base leading-relaxed max-w-2xl">
+                                        {seminar.speaker_description}
+                                    </p>
                                 )}
 
                             </div>

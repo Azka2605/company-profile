@@ -8,18 +8,19 @@ import {
 import Layout from '../Components/Layout';
 
 const eeaData = [
-    { year: '2018', pesertaLomba: '120+', pesertaSeminar: '300+', img: '/images/eea-2018.jpg' },
-    { year: '2019', pesertaLomba: '150+', pesertaSeminar: '350+', img: '/images/eea-2019.jpg' },
-    { year: '2020', pesertaLomba: '200+', pesertaSeminar: '400+', img: '/images/eea-2020.jpg' },
-    { year: '2021', pesertaLomba: '250+', pesertaSeminar: '450+', img: '/images/eea-2021.jpg' },
-    { year: '2022', pesertaLomba: '300+', pesertaSeminar: '500+', img: '/images/eea-2022.jpg' },
-    { year: '2023', pesertaLomba: '350+', pesertaSeminar: '600+', img: '/images/eea-2023.jpg' },
-    { year: '2024', pesertaLomba: '400+', pesertaSeminar: '700+', img: '/images/eea-2024.jpg' },
-    { year: '2025', pesertaLomba: '500+', pesertaSeminar: '850+', img: '/images/eea-2025.jpg' },
+    { year: '2018', pesertaLomba: '120+', pesertaSeminar: '300+', img: '/images/eea-2018.jpg', video: '/images/eea-2018.mp4' },
+    { year: '2019', pesertaLomba: '150+', pesertaSeminar: '350+', img: '/images/eea-2019.jpg', video: '/images/eea-2019.mp4' },
+    { year: '2020', pesertaLomba: '200+', pesertaSeminar: '400+', img: '/images/eea-2020.jpg', video: '/images/eea-2020.mp4' },
+    { year: '2021', pesertaLomba: '250+', pesertaSeminar: '450+', img: '/images/eea-2021.jpg', video: '/images/eea-2021.mp4' },
+    { year: '2022', pesertaLomba: '300+', pesertaSeminar: '500+', img: '/images/eea-2022.jpg', video: '/images/eea-2022.mp4' },
+    { year: '2023', pesertaLomba: '350+', pesertaSeminar: '600+', img: '/images/eea-2023.jpg', video: '/images/eea-2023.mp4' },
+    { year: '2024', pesertaLomba: '400+', pesertaSeminar: '700+', img: '/images/eea-2024.jpg', video: '/images/eea-2024.mp4' },
+    { year: '2025', pesertaLomba: '500+', pesertaSeminar: '2000+', img: '/images/IMG_4805.png', video: '/images/IMG_9575.mp4' },
 ];
 
 function EEASlider() {
     const [active, setActive] = useState(eeaData.length - 1);
+    const [hovered, setHovered] = useState(false);
     const [imgErrors, setImgErrors] = useState({});
     
     const prev = () => setActive(i => (i === 0 ? eeaData.length - 1 : i - 1));
@@ -30,7 +31,11 @@ function EEASlider() {
         <div className="relative w-full max-w-5xl mx-auto">
             <div className="bg-white rounded-[2.5rem] border border-slate-100 shadow-xl overflow-hidden group">
                 <div className="flex flex-col md:flex-row min-h-[400px]">
-                    <div className="md:w-1/2 relative bg-slate-800 overflow-hidden flex items-center justify-center">
+                    <div
+                        className="md:w-1/2 relative bg-slate-800 overflow-hidden flex items-center justify-center"
+                        onMouseEnter={() => setHovered(true)}
+                        onMouseLeave={() => setHovered(false)}
+                    >
                         <AnimatePresence mode="wait">
                             {imgErrors[active] ? (
                                 <motion.div 
@@ -46,17 +51,37 @@ function EEASlider() {
                                     <span className="font-semibold text-lg">Dokumentasi EEA {item.year}</span>
                                 </motion.div>
                             ) : (
-                                <motion.img 
-                                    key={`img-${active}`}
-                                    initial={{ opacity: 0, scale: 1.05 }}
+                                <motion.div
+                                    key={`media-${active}`}
+                                    className="absolute inset-0"
+                                    initial={{ opacity: 0, scale: 1.03 }}
                                     animate={{ opacity: 1, scale: 1 }}
                                     exit={{ opacity: 0 }}
-                                    transition={{ duration: 0.5 }}
-                                    src={item.img} 
-                                    alt={`EEA ${item.year}`}
-                                    className="absolute inset-0 w-full h-full object-cover"
-                                    onError={() => setImgErrors(prev => ({ ...prev, [active]: true }))} 
-                                />
+                                    transition={{ duration: 0.4 }}
+                                >
+                                    <img
+                                        src={item.img}
+                                        alt={`EEA ${item.year}`}
+                                        className="absolute inset-0 w-full h-full object-cover"
+                                        onError={() => setImgErrors(prev => ({ ...prev, [active]: true }))}
+                                    />
+
+                                    {item.video && hovered && (
+                                        <motion.video
+                                            key={`video-${active}`}
+                                            src={item.video}
+                                            autoPlay
+                                            muted
+                                            loop
+                                            playsInline
+                                            className="absolute inset-0 w-full h-full object-cover"
+                                            initial={{ opacity: 0 }}
+                                            animate={{ opacity: 1 }}
+                                            exit={{ opacity: 0 }}
+                                            transition={{ duration: 0.3 }}
+                                        />
+                                    )}
+                                </motion.div>
                             )}
                         </AnimatePresence>
                         <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 to-transparent md:hidden"></div>
@@ -168,7 +193,7 @@ export default function Home({ competitions = [], timelines = [], seminar }) {
                         transition={{ delay: 0.5, duration: 0.6 }}
                         className="text-slate-400 text-lg md:text-xl max-w-2xl mb-12 leading-relaxed"
                     >
-                        Program kerja terbesar Himpunan Mahasiswa Teknik Elektro UNILA yang menghadirkan Seminar Nasional dan berbagai Kompetisi Teknologi bergengsi.
+                        Seminar Nasional dan berbagai Kompetisi Teknologi bergengsi yang diselenggarakan oleh Himpunan Mahasiswa Teknik Elektro UNILA.
                     </motion.p>
 
                     <motion.div
