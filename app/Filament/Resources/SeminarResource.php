@@ -55,6 +55,12 @@ class SeminarResource extends Resource
                         Forms\Components\TextInput::make('speaker_title')
                             ->label('Jabatan / Gelar')
                             ->placeholder('Contoh: Dosen Senior, Pakar Sistem Embedded'),
+
+                        Forms\Components\Textarea::make('speaker_description')
+                            ->label('Deskripsi Pembicara')
+                            ->placeholder('Tuliskan ringkasan singkat tentang pembicara...')
+                            ->rows(4)
+                            ->columnSpanFull(),
                     ]),
 
                 Section::make('📅 Waktu & Tempat')
@@ -65,7 +71,7 @@ class SeminarResource extends Resource
                         Forms\Components\DatePicker::make('date')
                             ->label('Tanggal Pelaksanaan')
                             ->native(false)
-                            ->displayFormat('d MMMM Y'),
+                            ->displayFormat('d F Y'),
 
                         Forms\Components\TextInput::make('location')
                             ->label('Lokasi / Tempat')
