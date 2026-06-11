@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Head, useForm, usePage } from '@inertiajs/react';
 import Layout from '../Components/Layout';
+import useMidtrans from '../Hooks/useMidtrans';
 
 
 
@@ -24,32 +25,9 @@ const [registrationType, setRegistrationType] = useState('individu');
     }, [registrationType]);
 
     // Load Midtrans + trigger popup
-    useEffect(() => {
-        if (!snap_url || !snap_token) return;
-
-        const existing_script = document.querySelector(`script[src="${snap_url}"]`);
-        if (existing_script) {
-            window.snap?.pay(snap_token, {
-                onSuccess: () => { window.location.href = '/dashboard'; },
-                onPending: () => { window.location.href = '/dashboard'; },
-                onError:   () => { alert('Pembayaran gagal, coba lagi.'); },
-            });
-            return;
-        }
-
-        const script = document.createElement('script');
-        script.src = snap_url;
-        script.setAttribute('data-client-key', client_key);
-        script.async = true;
-        script.onload = () => {
-            window.snap.pay(snap_token, {
-                onSuccess: () => { window.location.href = '/dashboard'; },
-                onPending: () => { window.location.href = '/dashboard'; },
-                onError:   () => { alert('Pembayaran gagal, coba lagi.'); },
-            });
-        };
-        document.body.appendChild(script);
-    }, [snap_token]);
+    useMidtrans(snap_token, snap_url, client_key, () => {
+        window.location.href = '/dashboard';
+    });
 
     const addMember = () => {
         setData('members', [...data.members, { name: '', email: '' }]);

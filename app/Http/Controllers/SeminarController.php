@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\SeminarRegistration;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use App\Services\MidtransService;
 
 class SeminarController extends Controller
 {
@@ -21,7 +22,7 @@ class SeminarController extends Controller
         ]);
     }
 
-    public function store(Request $request)
+    public function store(Request $request, MidtransService $midtransService)
     {
         $request->validate([
             'name'        => 'required|string|max:255',
@@ -50,31 +51,15 @@ class SeminarController extends Controller
             'payment_status'   => 'pending',
         ]);
 
-        // TODO: Generate Midtrans Snap token di sini (Step 4)
-    // Setup Midtrans
-        \Midtrans\Config::$serverKey = config('services.midtrans.server_key');
-        \Midtrans\Config::$isProduction = config('services.midtrans.is_production');
-        \Midtrans\Config::$isSanitized = true;
-        \Midtrans\Config::$is3ds = true;
-
-        $params = [
-            'transaction_details' => [
-                'order_id'     => $orderId,
-                'gross_amount' => 50000, // ganti dengan harga tiket asli nanti
-            ],
-            'customer_details' => [
-                'first_name' => $request->name,
-                'email'      => $request->email,
-                'phone'      => $request->phone,
-            ],
-        ];
-
-       try {
-    $snapToken = \Midtrans\Snap::getSnapToken($params);
-    $registration->update(['midtrans_token' => $snapToken]);
-} catch (\Exception $e) {
-    dd($e->getMessage());
-}
+        try {
+            $snapToken = $midtransService->getSnapToken(
+                ['order_id' => $orderId, 'gross_amount' => 50000],
+                ['first_name' => $request->name, 'email' => $request->email, 'phone' => $request->phone]
+            );
+            $registration->update(['midtrans_token' => $snapToken]);
+        } catch (\Exception $e) {
+            dd($e->getMessage());
+        }
 
         return Inertia::render('SeminarRegister', [
             'snap_token'   => $snapToken,

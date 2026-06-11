@@ -6,6 +6,7 @@ use App\Models\Competition;
 use App\Models\CompetitionRegistration;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use App\Services\MidtransService;
 
 class CompetitionController extends Controller
 {
@@ -29,7 +30,7 @@ class CompetitionController extends Controller
         ]);
     }
 
-    public function store(Request $request)
+    public function store(Request $request, MidtransService $midtransService)
 {
     $request->validate([
         'competition_type'  => 'required|exists:competitions,slug',
@@ -71,25 +72,11 @@ class CompetitionController extends Controller
         'midtrans_order_id' => $orderId,
     ]);
 
-    \Midtrans\Config::$serverKey = config('services.midtrans.server_key');
-    \Midtrans\Config::$isProduction = config('services.midtrans.is_production');
-    \Midtrans\Config::$isSanitized = true;
-    \Midtrans\Config::$is3ds = true;
-
-    $params = [
-        'transaction_details' => [
-            'order_id'     => $orderId,
-            'gross_amount' => $competition->price, // ← ganti dari 50000
-        ],
-        'customer_details' => [
-            'first_name' => $request->name,
-            'email'      => $request->email,
-            'phone'      => $request->phone,
-        ],
-    ];
-
     try {
-        $snapToken = \Midtrans\Snap::getSnapToken($params);
+        $snapToken = $midtransService->getSnapToken(
+            ['order_id' => $orderId, 'gross_amount' => $competition->price],
+            ['first_name' => $request->name, 'email' => $request->email, 'phone' => $request->phone]
+        );
         $registration->update(['midtrans_token' => $snapToken]);
     } catch (\Exception $e) {
         dd($e->getMessage());

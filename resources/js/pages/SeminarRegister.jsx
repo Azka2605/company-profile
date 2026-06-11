@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { Head, useForm, usePage } from '@inertiajs/react';
 import Layout from '../Components/Layout';
+import useMidtrans from '../Hooks/useMidtrans';
 
 export default function SeminarRegister({ existing, user, snap_token, client_key, snap_url }) {
     const { data, setData, post, processing, errors } = useForm({
@@ -10,34 +11,9 @@ export default function SeminarRegister({ existing, user, snap_token, client_key
         institution: '',
     });
 
-// Load Midtrans Snap script + langsung trigger kalau snap_token ada
-useEffect(() => {
-    if (!snap_url || !snap_token) return;
-
-    const existing = document.querySelector(`script[src="${snap_url}"]`);
-    if (existing) {
-        // Script sudah ada, langsung trigger
-        window.snap.pay(snap_token, {
-            onSuccess: () => { window.location.href = '/dashboard'; },
-            onPending: () => { window.location.href = '/dashboard'; },
-            onError:   () => { alert('Pembayaran gagal, coba lagi.'); },
-        });
-        return;
-    }
-
-    const script = document.createElement('script');
-    script.src = snap_url;
-    script.setAttribute('data-client-key', client_key);
-    script.async = true;
-    script.onload = () => {
-        window.snap.pay(snap_token, {
-            onSuccess: () => { window.location.href = '/dashboard'; },
-            onPending: () => { window.location.href = '/dashboard'; },
-            onError:   () => { alert('Pembayaran gagal, coba lagi.'); },
-        });
-    };
-    document.body.appendChild(script);
-}, [snap_token]);
+    useMidtrans(snap_token, snap_url, client_key, () => {
+        window.location.href = '/dashboard';
+    });
 
     const submit = (e) => {
         e.preventDefault();
