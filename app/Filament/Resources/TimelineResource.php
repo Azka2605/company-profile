@@ -27,6 +27,14 @@ class TimelineResource extends Resource
                     ->required(),
                 Forms\Components\TextInput::make('date')
                     ->required(),
+                Forms\Components\Select::make('timeline_type')
+                    ->label('Tipe Timeline')
+                    ->required()
+                    ->options([
+                        'event' => 'Timeline Event / Dashboard',
+                        'seminar' => 'Timeline Seminar',
+                    ])
+                    ->default('event'),
                 Forms\Components\Textarea::make('description')
                     ->columnSpanFull(),
                 Forms\Components\TextInput::make('order')
@@ -44,6 +52,13 @@ class TimelineResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('title')
                     ->searchable(),
+                Tables\Columns\TextColumn::make('timeline_type')
+                    ->label('Tipe')
+                    ->formatStateUsing(fn (?string $state): string => [
+                        'event' => 'Event / Dashboard',
+                        'seminar' => 'Seminar',
+                    ][$state] ?? $state)
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('date')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('order')

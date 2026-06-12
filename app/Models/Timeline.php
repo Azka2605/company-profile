@@ -12,6 +12,7 @@ class Timeline extends Model
         'description',
         'order',
         'is_active',
+        'timeline_type',
     ];
 
     protected $casts = [
